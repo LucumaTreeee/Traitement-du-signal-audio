@@ -99,6 +99,14 @@ std::vector<std::complex<double>> performFFT(const std::vector<double>& data) {
     return fft_result;
 }
 
+// Fonction pour effectuer un remplissage par zéro
+void zeroPadding(std::vector<double>& data, int new_size) {
+    if (new_size > data.size()) {
+        data.resize(new_size, 0.0);  // Remplir avec des zéros
+    }
+}
+
+
 // Transformée de Fourier inverse (Inverse FFT)
 std::vector<double> performInverseFFT(const std::vector<std::complex<double>>& fft_data) {
     int N = fft_data.size();
@@ -168,7 +176,11 @@ int main() {
     // Application de la fenêtre de Hamming
     applyHammingWindow(filtered_data);
 
-    // Sauvegarde des données traitées (filtrées et avec fenêtre de Hamming)
+    // **Appliquer le remplissage par zéro**
+    int zero_padded_size = 8192;  // Taille cible après remplissage
+    zeroPadding(filtered_data, zero_padded_size);
+
+    // Sauvegarde des données traitées (filtrées, avec fenêtre de Hamming, et remplies de zéros)
     saveDataToFile("filtered_audio_info.txt", filtered_data);
 
     // Exécution de la FFT, conservation uniquement de la partie des fréquences positives
